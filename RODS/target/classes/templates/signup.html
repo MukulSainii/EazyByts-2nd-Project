@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta name="_csrf" th:content="${_csrf.token}"/>
+  <meta charset="utf-8">
+  <meta name="author" content="Mukul Saini">
+  <meta name="description" content="restaurant">
+  <meta name="keywords" content="restaurant, final project, autumn 2020">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>restaurant</title>
+  <link rel="shortcut icon" th:href="@{/resources/favicon.ico}" type="image/x-icon">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" th:href="@{/css/reset.css}"/>
+  <link rel="stylesheet" th:href="@{/css/general.css}"/>
+  <link rel="stylesheet" th:href="@{/css/sign.css}"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+  <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js'></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+  <script th:src="@{/js/signup_request.js}"></script>
+</head>
+
+<body>
+<div class="backcolor"></div>
+<div class="body-block shadow-large page_width">
+
+  <section class="section1">
+    <div style="display:flex; align-items: center">
+      <a class="hbutton" href="/" th:text="#{main.main}"></a>
+    </div>
+    <div>
+      <a class="abutton" href="/login" th:text="#{sign.in}"></a>
+      <select class="abutton" id="locales">
+        <option value="" th:text="#{lang.change}"></option>
+        <option value="en" th:text="#{lang.en}"></option>
+        <option value="ua" th:text="#{lang.ua}"></option>
+      </select>
+      <script type="text/javascript">
+                $(document).ready(function() {
+                    $("#locales").change(function () {
+                        let selectedOption = $('#locales').val();
+                        if (selectedOption !== ''){
+                            window.location.replace('?lang=' + selectedOption);
+                        }
+                    });
+                });
+            </script>
+    </div>
+  </section>
+
+  <header class="section2">
+    <a href="/"><h2 th:text="#{main.header}"></h2></a>
+  </header>
+
+  <section class="section4" ng-app="get_form" ng-controller="GetController">
+    <main>
+      <div class="frame">
+        <form id="formSignUp" class="form-signup">
+
+          <label for="login" th:text="#{sign.username}"></label>
+          <input id="login" class="form-styling" type="text" required autofocus/>
+
+          <label for="email" th:text="#{sign.email}"></label>
+          <input id="email" class="form-styling" type="email" required/>
+
+          <div>
+            <label for="password" th:text="#{sign.password}"></label>
+            <input id="password" class="form-styling" type="password" name="password" autocomplete="on" required/>
+            <span toggle="#password" class="fa fa-fw fa-eye field-icon toggle-password"></span>
+          </div>
+          <div>
+            <label for="confirmpassword" th:text="#{sign.confirmPassword}"></label>
+            <input id="confirmpassword" class="form-styling" type="password" name="confirmpassword" required
+                   autocomplete="on" />
+            <span toggle="#confirmpassword" class="fa fa-fw fa-eye field-icon toggle-password"></span>
+          </div>
+          <input class="btn-signup" type="button" ng-click="signup()" th:value="#{sign.up}"/>
+        </form>
+      </div>
+    </main>
+  </section>
+
+</div>
+
+</body>
+
+<script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js'></script>
+<script th:src="@{/js/general.js}"></script>
+
+</html>

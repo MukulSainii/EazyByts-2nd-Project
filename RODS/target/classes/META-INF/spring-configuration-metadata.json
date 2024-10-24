@@ -1,0 +1,30 @@
+{
+  "groups": [],
+  "properties": [
+    {
+      "name": "page.categoryId",
+      "type": "java.lang.Integer",
+      "description": "Default category id, without any filtering.",
+      "defaultValue": 0
+    },
+    {
+      "name": "page.size",
+      "type": "java.lang.Integer",
+      "description": "Number of rows on front (pagination).",
+      "defaultValue": 5
+    },
+    {
+      "name": "page.sortDefault",
+      "type": "java.lang.String",
+      "description": "Default sort field.",
+      "defaultValue": "id"
+    },
+    {
+      "name": "page.sortDirectionDefault",
+      "type": "java.lang.String",
+      "description": "Default sort direction.",
+      "defaultValue": "asc"
+    }
+  ],
+  "hints": []
+}

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta charset="utf-8">
+    <meta name="author" content="Mukul Saini">
+    <meta name="description" content="restaurant">
+    <meta name="keywords" content="restaurant, final project, autumn 2020">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>restaurant</title>
+    <link rel="shortcut icon" th:href="@{/resources/favicon.ico}" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" th:href="@{/css/reset.css}"/>
+    <link rel="stylesheet" th:href="@{/css/general.css}"/>
+
+    <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js'></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+
+    <script th:src="@{/js/general.js}"></script>
+    <script th:src="@{/js/basket_request.js}"></script>
+
+</head>
+
+<body>
+<div class="backcolor"></div>
+<div class="body-block shadow-large page_width">
+    <section class="section1">
+        <div style="display:flex; align-items: center">
+            <a class="hbutton" href="/" th:text="#{main.main}"></a>
+            <a class="hbutton" href="/basket" th:text="#{main.basket}"></a>
+            <a class="hbutton" href="/orders" th:text="#{main.orders}"></a>
+            <a class="mbutton" href="/manager/manage_orders" th:text="#{main.manage.orders}"
+               sec:authorize="hasRole('ROLE_MANAGER')"></a>
+            <a class="mbutton" href="/manager/manage_dishes" th:text="#{main.manage.dishes}"
+               sec:authorize="hasRole('ROLE_MANAGER')"></a>
+        </div>
+        <div>
+            <a id="authorizedLogin" th:text="${#request.getUserPrincipal().getName()}"></a>
+            <a class="abutton" href="/logout" th:text="#{sign.out}"></a>
+
+            <label for="locales"></label>
+            <select class="abutton" id="locales">
+                <option value="" th:text="#{lang.change}"></option>
+                <option value="en" th:text="#{lang.en}"></option>
+                <option value="ua" th:text="#{lang.ua}"></option>
+            </select>
+            <script type="text/javascript">
+                $(document).ready(function() {
+                    $("#locales").change(function () {
+                        let selectedOption = $('#locales').val();
+                        if (selectedOption !== ''){
+                            window.location.replace('?lang=' + selectedOption);
+                        }
+                    });
+                });
+            </script>
+        </div>
+    </section>
+
+    <header class="section2">
+        <a href="/"><h2 th:text="#{main.basket}"></h2></a>
+    </header>
+
+    <section class="section4"
+             ng-app="get_form" ng-controller="GetController" data-ng-init="getItems()">
+
+        <div id="errorMsg"></div>
+
+        <div id="dishes_block">
+            <div>
+                <table id="table" ng-model="dishes">
+                    <tr>
+                        <th columns="0" onclick="tableSort(this, 'table')">№</th>
+                        <th columns="1" onclick="tableSort(this, 'table')" th:text="#{menu.dish}"></th>
+                        <th columns="2" onclick="tableSort(this, 'table')" th:text="#{menu.price}"></th>
+                        <th columns="3" onclick="tableSort(this, 'table')" th:text="#{menu.category}"></th>
+                        <th columns="4" th:text="#{basket.action}"></th>
+                    </tr>
+                    <tbody id="dishes_table">
+                    <tr ng-repeat="i in dishes" class="rows" checked=false>
+                        <td>{{i.id}}</td>
+                        <td>{{i.name}}</td>
+                        <td>{{i.price}}</td>
+                        <td>{{i.category.category}}</td>
+                        <td>
+                            <a id="{{i.id}}" class="abutton" ng-click="delete($event)" th:text="#{button.delete}"></a>
+                        </td>
+                    </tr>
+
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="page_head" ng-model="totalPrice">
+                <p style="align-items: end;">
+                    <span th:text="#{orders.totalPrice} + ' = '"></span>
+                    <span style="font-weight: 700">{{totalPrice}}</span>
+                </p>
+
+            </div>
+
+            <div class="page_head">
+                <div style="margin: 20px 0;">
+                    <a class="button" ng-click="postdata()" th:text="#{basket.create}"></a>
+                </div>
+                <div>
+                    <a class="button" ng-click="deleteAll()" th:text="#{basket.deleteAll}"></a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</div>
+</body>
+
+</html>

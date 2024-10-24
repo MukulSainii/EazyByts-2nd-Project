@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+>
+<head>
+  <meta name="_csrf" th:content="${_csrf.token}"/>
+  <meta charset="utf-8">
+  <meta name="author" content="Mukul Saini">
+  <meta name="description" content="restaurant">
+  <meta name="keywords" content="restaurant, final project, autumn 2020">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>restaurant</title>
+  <link rel="shortcut icon" th:href="@{/resources/favicon.ico}" type="image/x-icon">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" th:href="@{/css/reset.css}"/>
+  <link rel="stylesheet" th:href="@{/css/general.css}"/>
+
+  <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js'></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+
+  <script th:src="@{/js/general.js}"></script>
+  <script th:src="@{/js/main_request.js}"></script>
+
+</head>
+
+<body>
+<div class="backcolor"></div>
+<div class="body-block shadow-large page_width">
+  <section class="section1">
+    <div style="display:flex; align-items: center">
+      <a class="hbutton" href="/" th:text="#{main.main}"></a>
+      <a class="hbutton" href="/basket" th:text="#{main.basket}" sec:authorize="isAuthenticated()"></a>
+      <a class="hbutton" href="/orders" th:text="#{main.orders}" sec:authorize="isAuthenticated()"></a>
+      <a class="mbutton" href="/manager/manage_orders" th:text="#{main.manage.orders}"
+         sec:authorize="hasRole('ROLE_MANAGER')"></a>
+      <a class="mbutton" href="/manager/manage_dishes" th:text="#{main.manage.dishes}"
+         sec:authorize="hasRole('ROLE_MANAGER')"></a>
+    </div>
+    <div>
+            <span sec:authorize="isAuthenticated()">
+                <a id="authorizedLogin" th:text="${#request.getUserPrincipal().getName()}"></a>
+            </span>
+      <a class="abutton" href="/login" th:text="#{sign.in}"
+         sec:authorize="!isAuthenticated()"></a>
+      <a class="abutton" href="/signup" th:text="#{sign.up}"
+         sec:authorize="!isAuthenticated()"></a>
+      <a class="abutton" href="/logout" th:text="#{sign.out}"
+         sec:authorize="isAuthenticated()"></a>
+
+      <label for="locales"></label>
+      <select class="abutton" id="locales">
+        <option value="" th:text="#{lang.change}"></option>
+        <option value="en" th:text="#{lang.en}"></option>
+        <option value="ua" th:text="#{lang.ua}"></option>
+      </select>
+      <script type="text/javascript">
+                $(document).ready(function() {
+                    $("#locales").change(function () {
+                        let selectedOption = $('#locales').val();
+                        if (selectedOption !== ''){
+                            window.location.replace('?lang=' + selectedOption);
+                        }
+                    });
+                });
+            </script>
+    </div>
+  </section>
+
+  <header class="section2">
+    <a href="/"><h2 th:text="#{main.header}"></h2></a>
+  </header>
+
+  <section class="section4"
+           ng-app="get_form" ng-controller="GetController" data-ng-init="getItems()">
+    <div class="page_head">
+      <div>
+        <h2 th:text="#{main.menu}"></h2>
+      </div>
+
+      <div ng-model="categories">
+        <label for="categories_filter"></label>
+        <select id="categories_filter" class="form-styling">
+          <option th:value="" th:text="#{menu.filter.name}"></option>
+          <option th:value="0" th:text="#{menu.filter.all}"></option>
+          <option ng-repeat="c in categories" value="{{c.id}}">{{c.category}}</option>
+        </select>
+        <script type="text/javascript">
+                    $(document).ready(function() {
+                        $("#categories_filter").change(function () {
+                            category = $('#categories_filter').val();
+                            page = 1;
+                            replace();
+                        });
+                    });
+                </script>
+      </div>
+    </div>
+
+    <div id="dishes_block">
+      <div>
+        <table id="table" ng-model="dishes">
+          <tr>
+            <th columns="0" onclick="sorting('id')">№</th>
+            <th columns="1" onclick="sorting('name', this)" th:text="#{menu.dish}"></th>
+            <th columns="2" onclick="sorting('price')" th:text="#{menu.price}"></th>
+            <th columns="3" onclick="sorting('categories')" th:text="#{menu.category}"></th>
+            <th columns="4" sec:authorize="isAuthenticated()" th:text="#{basket.action}"></th>
+
+          </tr>
+          <tbody id="dishes_table">
+          <tr ng-repeat="i in dishes" class="rows" checked=false>
+            <td>{{i.id}}</td>
+            <td>{{i.name}}</td>
+            <td>{{i.price}}</td>
+            <td>{{i.category.category}}</td>
+            <td >
+              <a class="abutton" dishId="{{i.id}}" ng-click="postdata($event)" th:text="#{button.add}" sec:authorize="isAuthenticated()"></a>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="pages" ng-model="pageable">
+      <div th:text="#{page.current} + ' {{pageable.page}}'"></div>
+
+      <div class="pagination">
+        <a ng-repeat="x in [].constructor(pageable.totalPages) track by $index"
+           class="abutton"
+           href="/?page={{$index+1}}&sort={{pageable.sortField}}&direct={{pageable.sortDirection}}&category={{pageable.categoryId}}">{{ $index+1 }}</a>
+      </div>
+
+      <div th:text="#{page.total} + ' {{pageable.totalPages}}'"></div>
+    </div>
+
+  </section>
+
+</div>
+</body>
+
+</html>

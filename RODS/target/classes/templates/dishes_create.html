@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+  <meta name="_csrf" th:content="${_csrf.token}"/>
+  <meta charset="utf-8">
+  <meta name="author" content="Mukul Saini">
+  <meta name="description" content="restaurant">
+  <meta name="keywords" content="restaurant, final project, autumn 2020">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>restaurant</title>
+  <link rel="shortcut icon" th:href="@{/resources/favicon.ico}" type="image/x-icon">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" th:href="@{/css/reset.css}"/>
+  <link rel="stylesheet" th:href="@{/css/general.css}"/>
+  <link rel="stylesheet" th:href="@{/css/sign.css}"/>
+
+  <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js'></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+
+  <script th:src="@{/js/general.js}"></script>
+  <script th:src="@{/js/dishes_request.js}"></script>
+
+</head>
+
+<body>
+<div class="backcolor"></div>
+<div class="body-block shadow-large page_width">
+  <section class="section1">
+    <div style="display:flex; align-items: center">
+      <a class="hbutton" href="/" th:text="#{main.main}"></a>
+      <a class="hbutton" href="/basket" th:text="#{main.basket}"></a>
+      <a class="hbutton" href="/orders" th:text="#{main.orders}"></a>
+      <a class="mbutton" href="/manager/manage_orders" th:text="#{main.manage.orders}"></a>
+      <a class="mbutton" href="/manager/manage_dishes" th:text="#{main.manage.dishes}"></a>
+    </div>
+    <div>
+      <a id="authorizedLogin" th:text="${#request.getUserPrincipal().getName()}"></a>
+      <a class="abutton" href="/logout" th:text="#{sign.out}"></a>
+      <select class="abutton" id="locales">
+        <option value="" th:text="#{lang.change}"></option>
+        <option value="en" th:text="#{lang.en}"></option>
+        <option value="ua" th:text="#{lang.ua}"></option>
+      </select>
+      <script type="text/javascript">
+                $(document).ready(function() {
+                    $("#locales").change(function () {
+                        let selectedOption = $('#locales').val();
+                        if (selectedOption !== ''){
+                            window.location.replace('?lang=' + selectedOption);
+                        }
+                    });
+                });
+            </script>
+    </div>
+  </section>
+
+  <header class="section2">
+    <a href="/"><h2 th:text="#{dish.create}"></h2></a>
+  </header>
+
+  <section class="section4" ng-app="get_form" ng-controller="GetController" data-ng-init="getCategories()">
+
+    <div id="dishes_block">
+      <div>
+        <div class="frame">
+          <form class="form-signin" ng-model="categories">
+            <input name="${_csrf.parameterName}" value="${_csrf.token}" type="hidden">
+
+            <label for="name_en" th:text="#{dish.name_en}"></label>
+            <input name="name_en" id="name_en" class="form-styling" type="text" required autofocus/>
+
+            <label for="name_ua" th:text="#{dish.name_ua}"></label>
+            <input name="name_ua" id="name_ua" class="form-styling" type="text" required/>
+
+            <label for="price" th:text="#{menu.price}"></label>
+            <input name="price" id="price" class="form-styling" type="number" required
+                   min="0.01" max="1000.00" step="0.01" value=""/>
+
+            <label for="category" th:text="#{menu.category}"></label>
+            <select id="category" name="category" class="form-styling">
+              <option ng-repeat="c in categories" value="{{c.id}}">{{c.category}}</option>
+            </select>
+
+            <input class="btn-signup" type="button" ng-click="create()" th:value="#{button.create}"/>
+          </form>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+</div>
+</body>
+
+</html>
